@@ -3,23 +3,21 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 
-// Initialiser Express
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: "*", // Autoriser toutes les origines (à restreindre en production)
+        origin: "*", // Autoriser toutes les origines pour le développement
         methods: ["GET", "POST"]
     }
 });
 
 app.use(cors());
+app.use(express.static('public')); // Servir les fichiers statiques depuis le dossier public
 
-// Gérer la connexion des clients
 io.on('connection', (socket) => {
     console.log('Un utilisateur est connecté');
 
-    // Recevoir un message et le diffuser à tous les clients
     socket.on('sendMessage', (message) => {
         io.emit('receiveMessage', message);
     });
@@ -29,8 +27,7 @@ io.on('connection', (socket) => {
     });
 });
 
-// Démarrer le serveur
-const PORT = process.env.PORT || 5000; // Utiliser le port 5000 ou le port défini par l'environnement
+const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
     console.log(`Le serveur fonctionne sur le port ${PORT}`);
 });
