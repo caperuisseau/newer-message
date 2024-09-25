@@ -1,38 +1,45 @@
 const socket = io('https://newer-message.onrender.com', {
-    transports: ['websocket'],
+    transports: ['websocket'], // Assurez-vous d'utiliser le bon transport
     withCredentials: true,
 });
 
-// Set nickname
-const nickname = prompt("Entrez votre pseudo:");
-socket.emit('setNickname', nickname);
-
-// Message handler
+// Éléments DOM
 const messageInput = document.getElementById('messageInput');
-const messageList = document.getElementById('messageList');
+const messageForm = document.getElementById('messageForm');
+const messagesContainer = document.getElementById('messages');
+const nicknameInput = document.getElementById('nicknameInput');
 
-messageInput.addEventListener('keypress', (event) => {
-    if (event.key === 'Enter') {
-        sendMessage();
+// Gestion de la soumission du formulaire
+messageForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const message = messageInput.value.trim();
+    if (message) {
+        socket.emit('sendMessage', message);
+        messageInput.value = '';
     }
 });
 
-function sendMessage() {
-    const message = messageInput.value;
-    socket.emit('sendMessage', message);
-    messageInput.value = '';
-}
-
-socket.on('newMessage', (data) => {
-    const li = document.createElement('li');
-    li.textContent = `${data.nickname}: ${data.message}`;
-    messageList.appendChild(li);
+// Événement pour recevoir des messages
+socket.on('message', ({ nickname, message }) => {
+    const msgElement = document.createElement('div');
+    msgElement.innerText = `${nickname}: ${message}`;
+    messagesContainer.appendChild(msgElement);
 });
 
-socket.on('error', (message) => {
-    alert(message);
+// Événement pour les erreurs
+socket.on('error', (error) => {
+    alert(error); // Vous pouvez remplacer ceci par un affichage plus élégant
 });
 
-socket.on('commandResponse', (message) => {
-    alert(message);
+// Configuration du pseudo
+nicknameInput.addEventListener('blur', () => {
+    const nickname = nicknameInput.value.trim();
+    socket.emit('setNickname', nickname);
+});
+
+// Envoi du message avec la touche "Entrée"
+messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        messageForm.dispatchEvent(new Event('submit'));
+    }
 });
