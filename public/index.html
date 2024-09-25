@@ -3,17 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Application de Chat Simple</title>
-    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
-    <script src="app.js" defer></script>
+    <title>Chat Amusant</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 </head>
 <body>
-    <h1>Application de Chat</h1>
-    <input id="username" placeholder="Entrez votre pseudonyme..." />
-    <button id="setUser">Définir Pseudonyme</button>
-    <br>
-    <input id="message" placeholder="Tapez un message..." />
-    <button id="send">Envoyer</button>
-    <ul id="messages"></ul>
+    <div class="container">
+        <h1>Bienvenue dans le Chat Amusant!</h1>
+        
+        <div class="chat-container">
+            <div class="user-list">
+                <h2>Utilisateurs en ligne:</h2>
+                <ul id="user-list"></ul>
+            </div>
+
+            <div class="messages-container">
+                <ul id="messages"></ul>
+            </div>
+
+            <div class="input-container">
+                <input id="username" type="text" placeholder="Entrez votre pseudo" required />
+                <input id="message" type="text" placeholder="Votre message ici..." required />
+                <button id="send-button">Envoyer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
