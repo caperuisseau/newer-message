@@ -1,4 +1,4 @@
-const socket = io('https://newer-message.onrender.com'); 
+const socket = io('https://newer-message.onrender.com'); //oui je fais ça 
 
 const loginSection = document.getElementById('login-section');
 const chatSection = document.getElementById('chat-section');
