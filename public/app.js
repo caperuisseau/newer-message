@@ -1,4 +1,4 @@
-const socket = io('https://newer-message.onrender.com'); //oui je fais ça 
+const socket = io('https://newer-message.onrender.com'); // Remplace par l'URL de ton backend
 
 const loginSection = document.getElementById('login-section');
 const chatSection = document.getElementById('chat-section');
@@ -44,5 +44,5 @@ logoutButton.addEventListener('click', () => {
     loginSection.style.display = 'block';
     chatSection.style.display = 'none';
     pseudonym = '';
-    messagesDiv.innerHTML = ''; // Clear messages on logout
+    messagesDiv.innerHTML = ''; // Vider les messages à la déconnexion
 });
