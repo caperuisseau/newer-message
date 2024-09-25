@@ -1,4 +1,4 @@
-const socket = io('https://<YOUR_RENDER_BACKEND_URL>'); 
+const socket = io('https://newer-message.onrender.com'); 
 
 const loginSection = document.getElementById('login-section');
 const chatSection = document.getElementById('chat-section');
