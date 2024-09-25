@@ -4,23 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Chat App</title>
-    <link rel="stylesheet" href="styles.css">
-    <!-- Inclure Socket.io -->
-    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="app.js" defer></script>
 </head>
 <body>
-    <div id="login-section">
-        <input type="text" id="username-input" placeholder="Entrez votre pseudonyme">
-        <button id="login-button">Se connecter</button>
-    </div>
-
-    <div id="chat-section" style="display: none;">
-        <div id="messages" style="height: 300px; overflow-y: scroll;"></div>
-        <input type="text" id="message-input" placeholder="Écrire un message">
-        <button id="send-button">Envoyer</button>
-        <button id="logout-button">Déconnexion</button>
-    </div>
-
-    <script src="app.js"></script> <!-- Assurez-vous que cela est après la ligne Socket.io -->
+    <h1>Application de Chat</h1>
+    <input id="message" placeholder="Tapez un message..." />
+    <button id="send">Envoyer</button>
+    <ul id="messages"></ul>
 </body>
 </html>
