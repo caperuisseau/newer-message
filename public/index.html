@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Chat App</title>
+    <title>Application de Chat Simple</title>
     <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
     <script src="app.js" defer></script>
 </head>
 <body>
     <h1>Application de Chat</h1>
+    <input id="username" placeholder="Entrez votre pseudonyme..." />
+    <button id="setUser">Définir Pseudonyme</button>
+    <br>
     <input id="message" placeholder="Tapez un message..." />
     <button id="send">Envoyer</button>
     <ul id="messages"></ul>
