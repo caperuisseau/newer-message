@@ -33,11 +33,13 @@ io.on('connection', (socket) => {
     // Écoute pour l'événement de pseudonyme
     socket.on('setUsername', (username) => {
         users[socket.id] = username; // Associe l'ID du socket au pseudonyme
+        console.log(`Pseudonyme défini: ${username}`); // Log pour déboguer
         socket.emit('userSet', { username: username }); // Envoie le pseudonyme à l'utilisateur
     });
 
     socket.on('sendMessage', (message) => {
         const username = users[socket.id] || 'Anonyme';
+        console.log(`Message reçu de ${username}: ${message}`); // Log pour déboguer
         io.emit('receiveMessage', { username, message }); // Envoie le message avec le pseudonyme
     });
 
