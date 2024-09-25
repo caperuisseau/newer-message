@@ -1,45 +1,84 @@
-const socket = io('https://newer-message.onrender.com', {
-    transports: ['websocket'], // Assurez-vous d'utiliser le bon transport
-    withCredentials: true,
-});
-
-// Éléments DOM
-const messageInput = document.getElementById('messageInput');
-const messageForm = document.getElementById('messageForm');
-const messagesContainer = document.getElementById('messages');
-const nicknameInput = document.getElementById('nicknameInput');
-
-// Gestion de la soumission du formulaire
-messageForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const message = messageInput.value.trim();
-    if (message) {
-        socket.emit('sendMessage', message);
-        messageInput.value = '';
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server, {
+    cors: {
+        origin: "https://newer-message.netlify.app", // Changez ici si nécessaire
+        methods: ["GET", "POST"],
+        credentials: true
     }
 });
 
-// Événement pour recevoir des messages
-socket.on('message', ({ nickname, message }) => {
-    const msgElement = document.createElement('div');
-    msgElement.innerText = `${nickname}: ${message}`;
-    messagesContainer.appendChild(msgElement);
+let commandPermission = {}; // Pour stocker les permissions des utilisateurs
+const MESSAGE_LIMIT = 200; // Limite de 200 caractères pour les messages
+const NICKNAME_LIMIT = { min: 3, max: 30 }; // Limites de caractères pour les pseudos
+const SPAM_TIME_LIMIT = 3000; // 3 secondes entre chaque message
+
+// Middleware pour gérer les connexions
+io.on('connection', (socket) => {
+    console.log('A user connected: ' + socket.id);
+    
+    socket.on('setNickname', (nickname) => {
+        if (nickname.length >= NICKNAME_LIMIT.min && nickname.length <= NICKNAME_LIMIT.max) {
+            socket.nickname = nickname;
+            socket.emit('nicknameSet', `Nickname set to ${nickname}`);
+        } else {
+            socket.emit('error', `Nickname must be between ${NICKNAME_LIMIT.min} and ${NICKNAME_LIMIT.max} characters.`);
+        }
+    });
+
+    let lastMessageTime = 0;
+
+    socket.on('sendMessage', (message) => {
+        const currentTime = Date.now();
+        
+        if (currentTime - lastMessageTime < SPAM_TIME_LIMIT) {
+            return socket.emit('error', 'You are sending messages too quickly. Please wait a moment.');
+        }
+
+        if (message.length < 1 || message.length > MESSAGE_LIMIT) {
+            return socket.emit('error', `Message must be between 1 and ${MESSAGE_LIMIT} characters.`);
+        }
+
+        lastMessageTime = currentTime;
+
+        // Commande pour devenir op
+        if (message.startsWith('/op ')) {
+            const code = message.split(' ')[1];
+            if (code === '280312code') {
+                commandPermission[socket.id] = true;
+                socket.emit('message', 'You are now an operator.');
+            }
+            return;
+        }
+
+        // Commandes spécifiques
+        if (commandPermission[socket.id] && message.startsWith('/')) {
+            // Gérer les commandes ici
+            switch (message) {
+                case '/help':
+                    socket.emit('message', 'Available commands: /help, /anotherCommand');
+                    break;
+                // Ajoutez d'autres commandes ici
+                default:
+                    socket.emit('error', 'Unknown command.');
+            }
+            return;
+        }
+
+        // Envoyer le message à tous les clients
+        io.emit('message', { nickname: socket.nickname || 'Anonymous', message });
+    });
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected: ' + socket.id);
+    });
 });
 
-// Événement pour les erreurs
-socket.on('error', (error) => {
-    alert(error); // Vous pouvez remplacer ceci par un affichage plus élégant
-});
-
-// Configuration du pseudo
-nicknameInput.addEventListener('blur', () => {
-    const nickname = nicknameInput.value.trim();
-    socket.emit('setNickname', nickname);
-});
-
-// Envoi du message avec la touche "Entrée"
-messageInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        messageForm.dispatchEvent(new Event('submit'));
-    }
+// Démarrer le serveur
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
