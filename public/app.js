@@ -1,29 +1,38 @@
-const socket = io('https://newer-message.onrender.com'); // Remplace par l'URL de ton serveur
-let username;
+const socket = io('https://newer-message.onrender.com', {
+    transports: ['websocket'],
+    withCredentials: true,
+});
 
-document.getElementById('setUser').addEventListener('click', () => {
-    username = document.getElementById('username').value.trim(); // Trim pour enlever les espaces
-    if (username) {
-        socket.emit('setUsername', username); // Envoie le pseudonyme au serveur
-        document.getElementById('username').value = ''; // Effacer le champ après saisie
-    } else {
-        alert('Veuillez entrer un pseudonyme valide'); // Alerte si le pseudonyme est vide
+// Set nickname
+const nickname = prompt("Entrez votre pseudo:");
+socket.emit('setNickname', nickname);
+
+// Message handler
+const messageInput = document.getElementById('messageInput');
+const messageList = document.getElementById('messageList');
+
+messageInput.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+        sendMessage();
     }
 });
 
-document.getElementById('send').addEventListener('click', () => {
-    const message = document.getElementById('message').value;
-    if (message.trim()) {
-        socket.emit('sendMessage', message);
-        document.getElementById('message').value = ''; // Effacer le champ après envoi
-    } else {
-        alert('Veuillez entrer un message valide'); // Alerte si le message est vide
-    }
-});
+function sendMessage() {
+    const message = messageInput.value;
+    socket.emit('sendMessage', message);
+    messageInput.value = '';
+}
 
-socket.on('receiveMessage', (data) => {
-    const messagesList = document.getElementById('messages');
+socket.on('newMessage', (data) => {
     const li = document.createElement('li');
-    li.textContent = `${data.username}: ${data.message}`; // Affiche le pseudonyme et le message
-    messagesList.appendChild(li);
+    li.textContent = `${data.nickname}: ${data.message}`;
+    messageList.appendChild(li);
+});
+
+socket.on('error', (message) => {
+    alert(message);
+});
+
+socket.on('commandResponse', (message) => {
+    alert(message);
 });
