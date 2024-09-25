@@ -9,6 +9,7 @@
 </head>
 <body>
     <div class="chat-container">
+        <input id="usernameInput" type="text" placeholder="Entrez votre pseudo..." />
         <div id="messages" class="messages"></div>
         <input id="messageInput" type="text" placeholder="Entrez votre message ici...">
         <button id="sendButton">Envoyer</button>
@@ -23,20 +24,23 @@
         const messagesDiv = document.getElementById('messages');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
+        const usernameInput = document.getElementById('usernameInput');
 
         // Événement pour envoyer un message
         sendButton.addEventListener('click', () => {
             const message = messageInput.value;
+            const username = usernameInput.value || 'Anonyme'; // Utiliser 'Anonyme' si le pseudo est vide
+
             if (message) {
-                socket.emit('sendMessage', message);
+                socket.emit('sendMessage', { username, message });
                 messageInput.value = ''; // Effacer le champ de saisie
             }
         });
 
         // Événement pour recevoir un message
-        socket.on('receiveMessage', (message) => {
+        socket.on('receiveMessage', (data) => {
             const messageElement = document.createElement('div');
-            messageElement.textContent = message;
+            messageElement.textContent = `${data.username}: ${data.message}`;
             messagesDiv.appendChild(messageElement);
         });
     </script>
