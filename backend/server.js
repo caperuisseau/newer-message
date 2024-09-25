@@ -9,8 +9,8 @@ const io = socketIo(server, {
     cors: {
         origin: "https://www-message.netlify.app", // L'URL de ton site Netlify
         methods: ["GET", "POST"],
-        allowedHeaders: ["Content-Type"], // Spécifie les en-têtes autorisés si nécessaire
-        credentials: true // Si tu as besoin de gérer les cookies ou l'authentification
+        allowedHeaders: ["Content-Type"],
+        credentials: true
     }
 });
 
@@ -22,7 +22,8 @@ app.use(cors({
     credentials: true
 }));
 
-app.use(express.static('public')); // Servir les fichiers statiques depuis le dossier public
+// Serve les fichiers statiques
+app.use(express.static('public'));
 
 io.on('connection', (socket) => {
     console.log('Un utilisateur est connecté');
