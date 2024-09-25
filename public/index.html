@@ -3,32 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newer Message</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <title>Chat en Temps Réel</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Bienvenue dans Newer Message!</h1>
-        
-        <div class="chat-container">
-            <div class="user-list">
-                <h2>Utilisateurs en ligne:</h2>
-                <ul id="user-list"></ul>
-            </div>
-
-            <div class="messages-container">
-                <ul id="messages"></ul>
-            </div>
-
-            <div class="input-container">
-                <input id="username" type="text" placeholder="Entrez votre pseudo" required />
-                <input id="message" type="text" placeholder="Votre message ici..." required />
-                <button id="send-button">Envoyer</button>
-            </div>
+        <h1>Bienvenue dans le Chat</h1>
+        <div id="userInput">
+            <input type="text" id="username" placeholder="Entrez votre pseudonyme">
+            <button id="setUser">Se Connecter</button>
+        </div>
+        <div id="chatWindow">
+            <ul id="messages"></ul>
+            <input type="text" id="message" placeholder="Entrez votre message">
+            <button id="send">Envoyer</button>
         </div>
     </div>
 
+    <script src="/socket.io/socket.io.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
