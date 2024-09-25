@@ -3,26 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat en Temps Réel</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Chat App</title>
+    <link rel="stylesheet" href="style.css"> <!-- Assurez-vous d'inclure le CSS -->
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 </head>
-
 <body>
-    <div class="container">
-        <h1>Bienvenue dans le Chat</h1>
-        <div id="userInput">
-            <input type="text" id="username" placeholder="Entrez votre pseudonyme">
-            <button id="setUser">Se Connecter</button>
-        </div>
-        <div id="chatWindow">
-            <ul id="messages"></ul>
-            <input type="text" id="message" placeholder="Entrez votre message">
-            <button id="send">Envoyer</button>
-        </div>
+    <div class="chat-container">
+        <div id="messages" class="messages"></div>
+        <input id="messageInput" type="text" placeholder="Entrez votre message ici...">
+        <button id="sendButton">Envoyer</button>
     </div>
 
-    <!-- Assurez-vous que socket.io est chargé avant votre script -->
-    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script> <!-- Mise à jour ici -->
-    <script src="app.js"></script>
+    <script>
+        const socket = io('https://newer-message.onrender.com', {
+            transports: ['websocket'],
+            withCredentials: true,
+        });
+
+        const messagesDiv = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+
+        // Événement pour envoyer un message
+        sendButton.addEventListener('click', () => {
+            const message = messageInput.value;
+            if (message) {
+                socket.emit('sendMessage', message);
+                messageInput.value = ''; // Effacer le champ de saisie
+            }
+        });
+
+        // Événement pour recevoir un message
+        socket.on('receiveMessage', (message) => {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            messagesDiv.appendChild(messageElement);
+        });
+    </script>
 </body>
 </html>
