@@ -94,6 +94,7 @@ button:hover {
     margin-bottom: 10px;
 }
 
+/* Styles pour les messages */
 #messages li {
     padding: 10px;
     margin-bottom: 5px;
@@ -105,15 +106,17 @@ button:hover {
 
 /* Couleurs des messages */
 #messages li.user {
-    background-color: #dcf8c6; /* Couleur des messages envoyés */
+    background-color: #dcf8c6; /* Couleur claire pour les messages envoyés */
     margin-left: auto; /* Alignement à droite */
     text-align: left; /* Alignement du texte à gauche */
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
 #messages li.friend {
-    background-color: #fff; /* Couleur des messages reçus */
+    background-color: #ffffff; /* Couleur blanche pour les messages reçus */
     margin-right: auto; /* Alignement à gauche */
     text-align: left; /* Alignement du texte à gauche */
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Animation d'apparition */
@@ -128,6 +131,7 @@ button:hover {
     }
 }
 
+/* Couleurs et styles pour l'input du message */
 #message {
     width: calc(100% - 30px);
     margin-right: 5px;
@@ -148,15 +152,6 @@ button:hover {
     }
 }
 
-/* Couleur du bouton d'envoi */
-button {
-    background-color: #25D366;
-}
-
-button:hover {
-    background-color: #128C7E;
-}
-
 /* Effets de transition sur les éléments de la liste des messages */
 #messages li {
     transition: background 0.2s;
@@ -164,24 +159,6 @@ button:hover {
 
 #messages li:hover {
     background: rgba(34, 193, 195, 0.1);
-}
-
-/* Dark mode (optionnel) */
-.dark-mode {
-    background: #2C3E50;
-    color: #ecf0f1;
-}
-
-.dark-mode .container {
-    background: #34495e;
-}
-
-.dark-mode input[type="text"], .dark-mode button {
-    border-color: #2980b9;
-}
-
-.dark-mode #messages {
-    background: #34495e;
 }
 
 /* Ombres et effets supplémentaires */
@@ -200,26 +177,27 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* Animations supplémentaires */
-@keyframes slideIn {
-    from {
-        transform: translateY(20px);
-        opacity: 0;
-    }
-    to {
+/* Animation pour les messages */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
         transform: translateY(0);
-        opacity: 1;
+    }
+    40% {
+        transform: translateY(-5px);
+    }
+    60% {
+        transform: translateY(-3px);
     }
 }
 
+/* Application de l'animation de rebond */
 #messages li {
-    animation: slideIn 0.5s ease;
+    animation: bounce 0.5s ease;
 }
 
-/* Ajout d'effets de survol */
-#messages li:hover {
-    transform: scale(1.02);
-    transition: transform 0.2s;
+/* Animation d'apparition des messages */
+#messages li {
+    animation: fadeIn 0.5s ease;
 }
 
 /* Effets de fond */
@@ -237,30 +215,33 @@ input[type="text"]:focus {
     background-color: #e6f7ff;
 }
 
-/* Transition sur les entrées de texte */
-input[type="text"] {
-    transition: background-color 0.3s;
-}
-
-/* Ombres sur les messages */
-#messages li {
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-}
-
 /* Animation des messages */
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
         transform: translateY(0);
-    }
-    40% {
-        transform: translateY(-5px);
-    }
-    60% {
-        transform: translateY(-3px);
+        opacity: 1;
     }
 }
 
-/* Application de l'animation de rebond */
 #messages li {
-    animation: bounce 0.5s ease;
+    animation: slideIn 0.5s ease;
+}
+
+/* Animation de l'ombre sur les messages */
+#messages li.user:hover,
+#messages li.friend:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Plus de styles pour la présentation */
+#messages li.user {
+    border: 1px solid #25D366;
+}
+
+#messages li.friend {
+    border: 1px solid #ddd;
 }
