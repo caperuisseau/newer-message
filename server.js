@@ -52,26 +52,37 @@ io.on('connection', (socket) => {
             return;
         }
 
+        // Vérifier si le message est une commande
+        if (message.startsWith('/')) {
+            handleCommand(message, socket);
+            return; // Ne pas envoyer le message au chat
+        }
+
         messages.push({ nickname, message });
         io.emit('newMessage', { nickname, message });
         commandUsers[socket.id].lastMessageTime = Date.now(); // Met à jour l'heure du dernier message
     });
 
-    socket.on('command', (command) => {
+    const handleCommand = (command, socket) => {
         const nickname = connectedUsers[socket.id];
 
         if (command === '/op me 280312code') {
             commandUsers[socket.id] = { authorized: true }; // Autorise l'utilisateur à utiliser des commandes
             socket.emit('commandResponse', 'Vous êtes désormais autorisé à utiliser des commandes.');
+        } else if (command === '/help') {
+            socket.emit('commandResponse', 'Commandes disponibles : /help, /clear, /op me 280312code');
+        } else if (command === '/clear') {
+            messages.length = 0; // Effacer les messages en mémoire
+            socket.emit('commandResponse', 'Le chat a été effacé.');
         } else if (command.startsWith('/')) {
             if (!commandUsers[socket.id] || !commandUsers[socket.id].authorized) {
                 socket.emit('error', 'Vous devez d\'abord exécuter la commande /op me 280312code.');
                 return;
             }
-            // Traitement des autres commandes
+            // Traitement d'autres commandes
             socket.emit('commandResponse', `Commande "${command}" exécutée.`);
         }
-    });
+    };
 
     socket.on('disconnect', () => {
         console.log('User disconnected: ' + socket.id);
