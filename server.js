@@ -1,96 +1,84 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
-const cors = require('cors');
-
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: "https://newer-message.netlify.app", // Change to your front-end domain
+        origin: "https://newer-message.netlify.app", // Changez ici si nécessaire
         methods: ["GET", "POST"],
         credentials: true
     }
 });
 
-app.use(cors());
-app.use(express.static('public'));
+let commandPermission = {}; // Pour stocker les permissions des utilisateurs
+const MESSAGE_LIMIT = 200; // Limite de 200 caractères pour les messages
+const NICKNAME_LIMIT = { min: 3, max: 30 }; // Limites de caractères pour les pseudos
+const SPAM_TIME_LIMIT = 3000; // 3 secondes entre chaque message
 
-const connectedUsers = {};
-const messages = [];
-const commandUsers = {}; // Pour stocker les utilisateurs ayant effectué la commande /op
-
+// Middleware pour gérer les connexions
 io.on('connection', (socket) => {
     console.log('A user connected: ' + socket.id);
-
+    
     socket.on('setNickname', (nickname) => {
-        // Validation du pseudo
-        if (nickname.length < 3 || nickname.length > 30) {
-            socket.emit('error', 'Le pseudo doit avoir entre 3 et 30 caractères.');
-            return;
+        if (nickname.length >= NICKNAME_LIMIT.min && nickname.length <= NICKNAME_LIMIT.max) {
+            socket.nickname = nickname;
+            socket.emit('nicknameSet', `Nickname set to ${nickname}`);
+        } else {
+            socket.emit('error', `Nickname must be between ${NICKNAME_LIMIT.min} and ${NICKNAME_LIMIT.max} characters.`);
         }
-        connectedUsers[socket.id] = nickname;
-        socket.emit('nicknameSet', nickname);
-        console.log(`Nickname set for ${socket.id}: ${nickname}`);
     });
+
+    let lastMessageTime = 0;
 
     socket.on('sendMessage', (message) => {
-        const nickname = connectedUsers[socket.id];
+        const currentTime = Date.now();
         
-        // Antispam : 1 message par 2 secondes
-        if (commandUsers[socket.id] && commandUsers[socket.id].lastMessageTime) {
-            const now = Date.now();
-            if (now - commandUsers[socket.id].lastMessageTime < 2000) {
-                socket.emit('error', 'Vous devez attendre 2 secondes avant d\'envoyer un autre message.');
-                return;
-            }
+        if (currentTime - lastMessageTime < SPAM_TIME_LIMIT) {
+            return socket.emit('error', 'You are sending messages too quickly. Please wait a moment.');
         }
 
-        // Validation du message
-        if (message.length < 1 || message.length > 200) {
-            socket.emit('error', 'Le message doit contenir entre 1 et 200 caractères.');
+        if (message.length < 1 || message.length > MESSAGE_LIMIT) {
+            return socket.emit('error', `Message must be between 1 and ${MESSAGE_LIMIT} characters.`);
+        }
+
+        lastMessageTime = currentTime;
+
+        // Commande pour devenir op
+        if (message.startsWith('/op ')) {
+            const code = message.split(' ')[1];
+            if (code === '280312code') {
+                commandPermission[socket.id] = true;
+                socket.emit('message', 'You are now an operator.');
+            }
             return;
         }
 
-        // Vérifier si le message est une commande
-        if (message.startsWith('/')) {
-            handleCommand(message, socket);
-            return; // Ne pas envoyer le message au chat
-        }
-
-        messages.push({ nickname, message });
-        io.emit('newMessage', { nickname, message });
-        commandUsers[socket.id].lastMessageTime = Date.now(); // Met à jour l'heure du dernier message
-    });
-
-    const handleCommand = (command, socket) => {
-        const nickname = connectedUsers[socket.id];
-
-        if (command === '/op me 280312code') {
-            commandUsers[socket.id] = { authorized: true }; // Autorise l'utilisateur à utiliser des commandes
-            socket.emit('commandResponse', 'Vous êtes désormais autorisé à utiliser des commandes.');
-        } else if (command === '/help') {
-            socket.emit('commandResponse', 'Commandes disponibles : /help, /clear, /op me 280312code');
-        } else if (command === '/clear') {
-            messages.length = 0; // Effacer les messages en mémoire
-            socket.emit('commandResponse', 'Le chat a été effacé.');
-        } else if (command.startsWith('/')) {
-            if (!commandUsers[socket.id] || !commandUsers[socket.id].authorized) {
-                socket.emit('error', 'Vous devez d\'abord exécuter la commande /op me 280312code.');
-                return;
+        // Commandes spécifiques
+        if (commandPermission[socket.id] && message.startsWith('/')) {
+            // Gérer les commandes ici
+            switch (message) {
+                case '/help':
+                    socket.emit('message', 'Available commands: /help, /anotherCommand');
+                    break;
+                // Ajoutez d'autres commandes ici
+                default:
+                    socket.emit('error', 'Unknown command.');
             }
-            // Traitement d'autres commandes
-            socket.emit('commandResponse', `Commande "${command}" exécutée.`);
+            return;
         }
-    };
+
+        // Envoyer le message à tous les clients
+        io.emit('message', { nickname: socket.nickname || 'Anonymous', message });
+    });
 
     socket.on('disconnect', () => {
         console.log('User disconnected: ' + socket.id);
-        delete connectedUsers[socket.id];
-        delete commandUsers[socket.id];
     });
 });
 
-server.listen(3000, () => {
-    console.log('Server is running on port 3000');
+// Démarrer le serveur
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
