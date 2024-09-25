@@ -1,4 +1,5 @@
 // Attendez que le DOM soit complètement chargé
+
 document.addEventListener("DOMContentLoaded", () => {
     const socket = io("https://newer-message.onrender.com"); // Remplacez par votre URL si nécessaire
     const usernameInput = document.getElementById("username");
@@ -50,4 +51,15 @@ document.addEventListener("DOMContentLoaded", () => {
             sendButton.click();
         }
     });
+});
+// Son de notification
+const notificationSound = new Audio('notification.mp3');
+
+// Recevoir les messages
+socket.on("message", (data) => {
+    const li = document.createElement("li");
+    li.textContent = `${data.username}: ${data.message}`;
+    messagesList.appendChild(li);
+    messagesList.scrollTop = messagesList.scrollHeight; // Faire défiler vers le bas
+    notificationSound.play(); // Jouer le son de notification
 });
