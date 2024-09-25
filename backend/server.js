@@ -7,12 +7,19 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: "*", // Autoriser toutes les origines pour le développement
-        methods: ["GET", "POST"]
+        origin: "https://www-message.netlify.app", // Remplace par l'URL de ton site Netlify
+        methods: ["GET", "POST"],
+        credentials: true // Si tu dois envoyer des cookies ou des informations d'authentification
     }
 });
 
-app.use(cors());
+// Middleware CORS
+app.use(cors({
+    origin: "https://www-message.netlify.app", // Remplace par l'URL de ton site Netlify
+    methods: ["GET", "POST"],
+    credentials: true
+}));
+
 app.use(express.static('public')); // Servir les fichiers statiques depuis le dossier public
 
 io.on('connection', (socket) => {
