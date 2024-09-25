@@ -7,7 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: "https://www-message.netlify.app", // L'URL de ton site Netlify
+        origin: "https://www-message.netlify.app", // Remplace avec ton site
         methods: ["GET", "POST"],
         allowedHeaders: ["Content-Type"],
         credentials: true
@@ -16,7 +16,7 @@ const io = socketIo(server, {
 
 // Middleware CORS
 app.use(cors({
-    origin: "https://www-message.netlify.app", // L'URL de ton site Netlify
+    origin: "https://www-message.netlify.app",
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
     credentials: true
@@ -25,15 +25,25 @@ app.use(cors({
 // Serve les fichiers statiques
 app.use(express.static('public'));
 
+let users = {}; // Pour stocker les pseudonymes
+
 io.on('connection', (socket) => {
     console.log('Un utilisateur est connecté');
 
+    // Écoute pour l'événement de pseudonyme
+    socket.on('setUsername', (username) => {
+        users[socket.id] = username; // Associe l'ID du socket au pseudonyme
+        socket.emit('userSet', { username: username }); // Envoie le pseudonyme à l'utilisateur
+    });
+
     socket.on('sendMessage', (message) => {
-        io.emit('receiveMessage', message);
+        const username = users[socket.id] || 'Anonyme';
+        io.emit('receiveMessage', { username, message }); // Envoie le message avec le pseudonyme
     });
 
     socket.on('disconnect', () => {
         console.log('Un utilisateur s\'est déconnecté');
+        delete users[socket.id]; // Supprime l'utilisateur de la liste
     });
 });
 
