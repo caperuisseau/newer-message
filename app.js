@@ -1,6 +1,35 @@
 const socket = io('https://<YOUR_RENDER_BACKEND_URL>'); // Remplace par l'URL de ton backend
 
-// Autres codes ...
+const loginSection = document.getElementById('login-section');
+const chatSection = document.getElementById('chat-section');
+const usernameInput = document.getElementById('username-input');
+const loginButton = document.getElementById('login-button');
+const messagesDiv = document.getElementById('messages');
+const messageInput = document.getElementById('message-input');
+const sendButton = document.getElementById('send-button');
+const logoutButton = document.getElementById('logout-button');
+
+let pseudonym = '';
+
+loginButton.addEventListener('click', () => {
+    pseudonym = usernameInput.value.trim();
+    if (pseudonym) {
+        loginSection.style.display = 'none';
+        chatSection.style.display = 'block';
+    }
+});
+
+sendButton.addEventListener('click', () => {
+    const message = messageInput.value.trim();
+    if (message) {
+        socket.emit('sendMessage', { user: pseudonym, text: message });
+        messageInput.value = ''; // Vider le champ après envoi
+    }
+});
+
+socket.on('receiveMessage', (data) => {
+    addMessage(data.user, data.text);
+});
 
 // Fonction pour afficher un message dans le chat
 function addMessage(username, message) {
@@ -11,16 +40,9 @@ function addMessage(username, message) {
     messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroller vers le bas
 }
 
-// Envoi du message lors du clic sur "Send"
-sendButton.addEventListener('click', () => {
-    const message = messageInput.value.trim();
-    if (message !== '') {
-        socket.emit('sendMessage', { user: pseudonym, text: message });
-        messageInput.value = ''; // Vider le champ après envoi
-    }
-});
-
-// Recevoir le message du serveur
-socket.on('receiveMessage', (data) => {
-    addMessage(data.user, data.text);
+logoutButton.addEventListener('click', () => {
+    loginSection.style.display = 'block';
+    chatSection.style.display = 'none';
+    pseudonym = '';
+    messagesDiv.innerHTML = ''; // Clear messages on logout
 });
