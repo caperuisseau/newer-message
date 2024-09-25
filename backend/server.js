@@ -7,16 +7,18 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: "https://www-message.netlify.app", // Remplace par l'URL de ton site Netlify
+        origin: "https://www-message.netlify.app", // L'URL de ton site Netlify
         methods: ["GET", "POST"],
-        credentials: true // Si tu dois envoyer des cookies ou des informations d'authentification
+        allowedHeaders: ["Content-Type"], // Spécifie les en-têtes autorisés si nécessaire
+        credentials: true // Si tu as besoin de gérer les cookies ou l'authentification
     }
 });
 
 // Middleware CORS
 app.use(cors({
-    origin: "https://www-message.netlify.app", // Remplace par l'URL de ton site Netlify
+    origin: "https://www-message.netlify.app", // L'URL de ton site Netlify
     methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
     credentials: true
 }));
 
