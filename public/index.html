@@ -1,26 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple Public Chat</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chat App</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Inclure Socket.io -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
 </head>
 <body>
-  <div id="app">
     <div id="login-section">
-      <h1>Join the Chat</h1>
-      <input type="text" id="username-input" placeholder="Enter your pseudonym" />
-      <button id="login-button">Join</button>
+        <input type="text" id="username-input" placeholder="Entrez votre pseudonyme">
+        <button id="login-button">Se connecter</button>
     </div>
+
     <div id="chat-section" style="display: none;">
-      <h1>Public Chat Room</h1>
-      <div id="messages" class="messages"></div>
-      <input type="text" id="message-input" placeholder="Type your message..." />
-      <button id="send-button">Send</button>
-      <button id="logout-button" class="logout">Logout</button>
+        <div id="messages" style="height: 300px; overflow-y: scroll;"></div>
+        <input type="text" id="message-input" placeholder="Écrire un message">
+        <button id="send-button">Envoyer</button>
+        <button id="logout-button">Déconnexion</button>
     </div>
-  </div>
-  <script src="app.js"></script>
+
+    <script src="app.js"></script> <!-- Assurez-vous que cela est après la ligne Socket.io -->
 </body>
 </html>
