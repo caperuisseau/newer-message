@@ -26,8 +26,8 @@
         const sendButton = document.getElementById('sendButton');
         const usernameInput = document.getElementById('usernameInput');
 
-        // Événement pour envoyer un message
-        sendButton.addEventListener('click', () => {
+        // Fonction pour envoyer un message
+        function sendMessage() {
             const message = messageInput.value;
             const username = usernameInput.value || 'Anonyme'; // Utiliser 'Anonyme' si le pseudo est vide
 
@@ -35,13 +35,25 @@
                 socket.emit('sendMessage', { username, message });
                 messageInput.value = ''; // Effacer le champ de saisie
             }
+        }
+
+        // Événement pour envoyer un message en appuyant sur le bouton
+        sendButton.addEventListener('click', sendMessage);
+
+        // Événement pour envoyer un message en appuyant sur Entrée
+        messageInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
         });
 
         // Événement pour recevoir un message
         socket.on('receiveMessage', (data) => {
             const messageElement = document.createElement('div');
-            messageElement.textContent = `${data.username}: ${data.message}`;
+            messageElement.classList.add('message');
+            messageElement.innerHTML = `<span class="username">${data.username}</span>: <span class="text">${data.message}</span>`;
             messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Défilement automatique vers le bas
         });
     </script>
 </body>
