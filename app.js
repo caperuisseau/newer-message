@@ -1,4 +1,4 @@
-const socket = io('https://<YOUR_RENDER_BACKEND_URL>'); // Remplace par l'URL de ton backend
+const socket = io('https://<YOUR_RENDER_BACKEND_URL>'); 
 
 const loginSection = document.getElementById('login-section');
 const chatSection = document.getElementById('chat-section');
