@@ -14,6 +14,7 @@ const io = socketIo(server, {
     }
 });
 
+// Middleware CORS
 app.use(cors({
     origin: ['https://www-message.netlify.app', 'https://newer-message.netlify.app'], // Ajoute toutes les origines nécessaires ici aussi
     methods: ['GET', 'POST'],
@@ -21,8 +22,23 @@ app.use(cors({
     credentials: true
 }));
 
-// ton code pour socket.io ici
+// Événement de connexion Socket.IO
+io.on('connection', (socket) => {
+    console.log('Un utilisateur est connecté');
 
-server.listen(3000, () => {
-    console.log('Server is running on port 3000');
+    // Recevoir un message
+    socket.on('sendMessage', (message) => {
+        io.emit('receiveMessage', message);
+    });
+
+    // Événement de déconnexion
+    socket.on('disconnect', () => {
+        console.log('Un utilisateur est déconnecté');
+    });
+});
+
+// Démarrer le serveur
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`Serveur en cours d'exécution sur le port ${PORT}`);
 });
