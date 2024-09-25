@@ -12,12 +12,22 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    padding: 10px; /* Ajout de l'espace intérieur */
+}
+
+#usernameInput {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px; /* Espace entre le pseudo et les messages */
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 .messages {
     height: 400px;
     overflow-y: auto; /* Faire défiler le contenu */
     padding: 10px;
+    margin-bottom: 10px; /* Espace entre les messages et le champ de saisie */
 }
 
 .messages div {
