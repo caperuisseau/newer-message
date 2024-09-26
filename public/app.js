@@ -1,4 +1,5 @@
-const socket = new WebSocket('wss://newer-message.netlify.app/.netlify/functions/socketHandler');
+// Remplacez l'URL par celle fournie
+const socket = new WebSocket('wss://newer-message.netlify.app/functions/socketHandler');
 
 const messagesContainer = document.getElementById('messages');
 const messageInput = document.getElementById('messageInput');
