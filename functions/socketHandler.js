@@ -1,27 +1,16 @@
-const io = require('socket.io')(3000, {
-  cors: {
-    origin: '*', // Autorise toutes les origines
-    methods: ['GET', 'POST']
-  }
-});
+const io = require('socket.io')(server); // ou ce que vous utilisez pour initialiser Socket.IO
 
 exports.handler = async (event, context) => {
-  // Le backend de gestion des messages avec Socket.io
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ message: "Socket.io is running!" }),
-  };
+    if (event.httpMethod !== 'POST') {
+        return {
+            statusCode: 405,
+            body: JSON.stringify({ message: 'Method Not Allowed' }),
+        };
+    }
+
+    // Votre logique de traitement ici
+    return {
+        statusCode: 200,
+        body: JSON.stringify({ message: 'Success' }),
+    };
 };
-
-io.on('connection', (socket) => {
-  console.log('Nouvelle connexion :', socket.id);
-
-  // Réception et envoi de message
-  socket.on('chatMessage', (msg) => {
-    io.emit('chatMessage', msg);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('Utilisateur déconnecté');
-  });
-});
