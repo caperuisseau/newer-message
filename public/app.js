@@ -1,4 +1,4 @@
-const socket = io('https://newer-message.netlify.app/functions/socketHandler');
+const socket = io('https://newer-message.netlify.app/.netlify/functions/socketHandler');
 
 const messagesContainer = document.getElementById('messages');
 const messageInput = document.getElementById('messageInput');
