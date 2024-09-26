@@ -3,10 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App</title>
-    <meta http-equiv="refresh" content="0; url=/public/">
+    <title>Application de Messagerie</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script defer src="app.js"></script>
 </head>
 <body>
-    <h1>Redirection vers l'application de chat...</h1>
+    <div class="chat-container">
+        <div id="messages"></div>
+        <input id="messageInput" placeholder="Écris un message..." />
+        <button id="sendMessage">Envoyer</button>
+    </div>
 </body>
 </html>
