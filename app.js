@@ -1,4 +1,4 @@
-const socket = io('https://newer-message.onrender.com', {
+const socket = io('https://newer-message.netlify.app', {
     transports: ['websocket'],
     withCredentials: true,
 });
