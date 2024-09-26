@@ -1,26 +1,31 @@
 const { Server } = require("socket.io");
 
+let io;
+
 exports.handler = async (event, context) => {
-    const io = new Server();
-
-    // Établir la connexion
-    io.on('connection', (socket) => {
-        console.log('Un utilisateur est connecté');
-
-        // Écoute des messages
-        socket.on('message', (message) => {
-            console.log('Message reçu: ', message);
-            io.emit('message', message); // Émet le message à tous les clients
+    if (!io) {
+        io = new Server({
+            cors: {
+                origin: "*", // Changez ceci pour limiter l'accès à votre domaine
+            },
         });
 
-        socket.on('disconnect', () => {
-            console.log('Un utilisateur est déconnecté');
-        });
-    });
+        io.on('connection', (socket) => {
+            console.log('Un utilisateur est connecté');
 
-    // Exécutez le serveur Socket.IO ici...
+            socket.on('message', (message) => {
+                console.log('Message reçu: ', message);
+                io.emit('message', message); // Émet le message à tous les clients
+            });
+
+            socket.on('disconnect', () => {
+                console.log('Un utilisateur est déconnecté');
+            });
+        });
+    }
+
     return {
         statusCode: 200,
-        body: 'Fonction Socket.IO',
+        body: 'Socket.IO est opérationnel',
     };
 };
