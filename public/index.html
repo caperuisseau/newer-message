@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
-    <link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat App</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="app.js"></script>
 </head>
 <body>
-    <div id="chat-container">
-        <div id="chat-box"></div>
-        <form id="message-form">
-            <input type="text" id="message" placeholder="Entrez votre message...">
-            <button type="submit" id="send-button">Envoyer</button>
-        </form>
-    </div>
-
-    <script src="./app.js"></script>
+  <div id="chat-container">
+    <div id="messages"></div>
+    <input id="nickname" type="text" placeholder="Entrez votre pseudo" maxlength="30" minlength="3">
+    <input id="message" type="text" placeholder="Entrez votre message" maxlength="200" minlength="1">
+    <button id="send">Envoyer</button>
+  </div>
 </body>
 </html>
