@@ -27,11 +27,6 @@ body {
     padding: 8px;
     border-radius: 5px;
     background: #d1ffd1; /* Vert clair pour les messages */
-    transition: background-color 0.3s;
-}
-
-.messages div:nth-child(even) {
-    background: #d1d1ff; /* Bleu clair pour les messages reçus */
 }
 
 input[type="text"] {
@@ -48,7 +43,6 @@ button {
     background-color: #4CAF50; /* Couleur de fond pour le bouton */
     color: white;
     cursor: pointer;
-    border-radius: 0;
 }
 
 button:hover {
