@@ -1,77 +1,47 @@
-const apiUrl = '/.netlify/functions/socketHandler'; // URL correcte pour une fonction Netlify
+document.addEventListener('DOMContentLoaded', () => {
+    const messageForm = document.getElementById('message-form');
+    const messageInput = document.getElementById('message');
+    const chatBox = document.getElementById('chat-box');
 
+    const nickname = prompt("Entrez votre pseudo (entre 3 et 30 caractères) :");
 
-// Éléments DOM
-const messageInput = document.getElementById('messageInput');
-const messageForm = document.getElementById('messageForm');
-const messagesContainer = document.getElementById('messages');
-const nicknameInput = document.getElementById('nicknameInput');
+    // Limiter le pseudo
+    if (nickname.length < 3 || nickname.length > 30) {
+        alert('Pseudo invalide. Le pseudo doit contenir entre 3 et 30 caractères.');
+        return;
+    }
 
-// Gestion de la soumission du formulaire
-messageForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const message = messageInput.value.trim();
-    const nickname = nicknameInput.value.trim() || 'Anonymous';
+    // Envoie de messages
+    messageForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const message = messageInput.value.trim();
 
-    if (message) {
-        try {
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                body: JSON.stringify({ type: 'sendMessage', message, nickname }),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+        if (message.length === 0 || message.length > 200) {
+            alert('Le message doit contenir entre 1 et 200 caractères.');
+            return;
+        }
 
-            const data = await response.json();
+        // Envoyer le message à la fonction Netlify
+        fetch('/.netlify/functions/socketHandler', {
+            method: 'POST',
+            body: JSON.stringify({
+                type: 'sendMessage',
+                message: message,
+                nickname: nickname,
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
             if (data.error) {
                 alert(data.error);
             } else {
-                displayMessage(data.message);
+                chatBox.innerHTML += `<div class="message"><strong>${nickname}:</strong> ${message}</div>`;
             }
-        } catch (error) {
-            console.error('Error sending message:', error);
-        }
-
-        messageInput.value = '';
-    }
-});
-
-// Fonction pour afficher un message dans le chat
-function displayMessage(message) {
-    const msgElement = document.createElement('div');
-    msgElement.innerText = message;
-    messagesContainer.appendChild(msgElement);
-}
-
-// Envoi du pseudo lorsqu'il est défini
-nicknameInput.addEventListener('blur', async () => {
-    const nickname = nicknameInput.value.trim();
-    if (nickname) {
-        try {
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                body: JSON.stringify({ type: 'setNickname', nickname }),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            const data = await response.json();
-            if (data.error) {
-                alert(data.error);
-            } else {
-                alert(data.message);
-            }
-        } catch (error) {
-            console.error('Error setting nickname:', error);
-        }
-    }
-});
-
-// Envoi du message avec la touche "Entrée"
-messageInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        messageForm.dispatchEvent(new Event('submit'));
-    }
+            messageInput.value = '';
+        })
+        .catch(err => console.error('Erreur:', err));
+    });
 });
