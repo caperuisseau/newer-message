@@ -54,7 +54,6 @@ function handleCommand(message, nickname) {
         case '/kick':
             if (opUsers.has(nickname)) {
                 const userToKick = args[0];
-                // Logique pour kicker un utilisateur
                 return {
                     statusCode: 200,
                     body: JSON.stringify({ message: `${userToKick} a été kické par ${nickname}.` }),
