@@ -1,93 +1,85 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #e5ddd5; /* Couleur de fond douce */
+    background-color: #f0f0f0;
     margin: 0;
-    padding: 20px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-.chat-container {
-    max-width: 500px;
-    margin: auto;
-    background: #fff; /* Fond blanc pour le chat */
+#chat-container {
+    width: 60%;
+    max-width: 800px;
+    background-color: white;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Ombre plus douce */
     overflow: hidden;
-    padding: 20px; /* Espace intérieur accru */
-    animation: fadeIn 0.5s; /* Animation d'apparition */
+    display: flex;
+    flex-direction: column;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-#usernameInput {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px; /* Espace entre le pseudo et les messages */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    transition: border-color 0.3s; /* Transition de la bordure */
-}
-
-#usernameInput:focus {
-    border-color: #007bff; /* Couleur de la bordure au focus */
-}
-
-.messages {
-    height: 400px;
-    overflow-y: auto; /* Faire défiler le contenu */
-    padding: 10px;
-    margin-bottom: 10px; /* Espace entre les messages et le champ de saisie */
-    background-color: #f9f9f9; /* Fond léger pour les messages */
-    border-radius: 5px;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); /* Ombre interne */
+#chat-box {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
 }
 
 .message {
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 15px;
-    position: relative;
-    max-width: 70%;
-    transition: background-color 0.3s; /* Transition d'effet de survol */
-}
-
-.message:hover {
-    background-color: #e3e3e3; /* Couleur d'effet au survol */
-}
-
-.username {
-    font-weight: bold;
-}
-
-.text {
-    font-size: 1.1em; /* Augmenter la taille du texte */
-}
-
-input[type="text"] {
-    width: calc(100% - 90px);
-    padding: 10px;
-    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding: 8px;
     border-radius: 5px;
-    outline: none;
-    transition: border-color 0.3s; /* Transition de la bordure */
+    background-color: #e2f0d9;
+    animation: fadeIn 0.5s ease;
 }
 
-input[type="text"]:focus {
-    border-color: #007bff; /* Couleur de la bordure au focus */
+.message:nth-child(odd) {
+    background-color: #d1ecf1;
 }
 
-button {
-    padding: 10px 15px;
-    border: none;
+.message strong {
+    color: #155724;
+}
+
+#message-form {
+    display: flex;
+    padding: 15px;
+    background-color: #fff;
+}
+
+#message {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ced4da;
     border-radius: 5px;
-    background-color: #007bff;
+    font-size: 16px;
+}
+
+#send-button {
+    background-color: #28a745;
     color: white;
+    border: none;
+    padding: 10px 15px;
+    margin-left: 10px;
     cursor: pointer;
-    transition: background-color 0.3s; /* Transition de la couleur de fond */
+    border-radius: 5px;
 }
 
-button:hover {
-    background-color: #0056b3; /* Couleur du bouton au survol */
+#send-button:hover {
+    background-color: #218838;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
