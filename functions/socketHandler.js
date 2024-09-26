@@ -1,16 +1,26 @@
-const io = require('socket.io')(server); // ou ce que vous utilisez pour initialiser Socket.IO
+const { Server } = require("socket.io");
 
 exports.handler = async (event, context) => {
-    if (event.httpMethod !== 'POST') {
-        return {
-            statusCode: 405,
-            body: JSON.stringify({ message: 'Method Not Allowed' }),
-        };
-    }
+    const io = new Server();
 
-    // Votre logique de traitement ici
+    // Établir la connexion
+    io.on('connection', (socket) => {
+        console.log('Un utilisateur est connecté');
+
+        // Écoute des messages
+        socket.on('message', (message) => {
+            console.log('Message reçu: ', message);
+            io.emit('message', message); // Émet le message à tous les clients
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Un utilisateur est déconnecté');
+        });
+    });
+
+    // Exécutez le serveur Socket.IO ici...
     return {
         statusCode: 200,
-        body: JSON.stringify({ message: 'Success' }),
+        body: 'Fonction Socket.IO',
     };
 };
