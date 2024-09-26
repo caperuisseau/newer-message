@@ -1,4 +1,5 @@
-const apiUrl = '/.netlify/functions/socketHandler'; // Fonction Netlify
+const apiUrl = '/.netlify/functions/socketHandler'; // URL correcte pour une fonction Netlify
+
 
 // Éléments DOM
 const messageInput = document.getElementById('messageInput');
