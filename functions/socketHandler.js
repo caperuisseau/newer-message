@@ -1,20 +1,21 @@
-const WebSocket = require('ws');
+const { Server } = require("socket.io");
 
-const wss = new WebSocket.Server({ noServer: true });
+exports.handler = async (event) => {
+    const io = new Server(event.socket);
 
-wss.on('connection', (ws) => {
-    ws.on('message', (message) => {
-        // Émettre le message à tous les clients connectés
-        wss.clients.forEach(client => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(message);
-            }
+    io.on('connection', (socket) => {
+        console.log('Un client est connecté');
+
+        socket.on('message', (message) => {
+            // Émettre le message à tous les clients connectés
+            io.emit('message', message);
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Un client est déconnecté');
         });
     });
-});
 
-// Pour l'intégration avec Netlify
-exports.handler = async (event) => {
     return {
         statusCode: 200,
         body: 'WebSocket server is running',
