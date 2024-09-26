@@ -1,5 +1,4 @@
-// Remplacez l'URL par celle fournie
-const socket = new WebSocket('wss://newer-message.netlify.app/functions/socketHandler');
+const socket = io('https://newer-message.netlify.app/functions/socketHandler');
 
 const messagesContainer = document.getElementById('messages');
 const messageInput = document.getElementById('messageInput');
@@ -9,14 +8,13 @@ const sendButton = document.getElementById('sendButton');
 sendButton.addEventListener('click', () => {
     const message = messageInput.value.trim();
     if (message) {
-        socket.send(message);
+        socket.emit('message', message);
         messageInput.value = ''; // Réinitialiser le champ de saisie
     }
 });
 
 // Événement pour recevoir des messages
-socket.addEventListener('message', (event) => {
-    const message = event.data;
+socket.on('message', (message) => {
     const messageElement = document.createElement('div');
     messageElement.textContent = message;
     messagesContainer.appendChild(messageElement);
