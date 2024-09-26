@@ -6,7 +6,7 @@ exports.handler = async (event, context) => {
     if (!io) {
         io = new Server({
             cors: {
-                origin: "*", // Changez ceci pour limiter l'accès à votre domaine
+                origin: "https://newer-message.netlify.app", // Remplacez par votre domaine
             },
         });
 
