@@ -5,13 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const nickname = prompt("Entrez votre pseudo (entre 3 et 30 caractères) :");
 
-    // Limiter le pseudo
     if (nickname.length < 3 || nickname.length > 30) {
         alert('Pseudo invalide. Le pseudo doit contenir entre 3 et 30 caractères.');
         return;
     }
 
-    // Envoie de messages
     messageForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const message = messageInput.value.trim();
@@ -21,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Envoyer le message à la fonction Netlify
         fetch('/.netlify/functions/socketHandler', {
             method: 'POST',
             body: JSON.stringify({
@@ -33,7 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Content-Type': 'application/json',
             },
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erreur serveur: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.error) {
                 alert(data.error);
@@ -42,6 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             messageInput.value = '';
         })
-        .catch(err => console.error('Erreur:', err));
+        .catch(err => {
+            console.error('Erreur:', err);
+            alert('Une erreur s\'est produite. Réessayez plus tard.');
+        });
     });
 });
