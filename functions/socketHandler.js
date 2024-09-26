@@ -1,8 +1,9 @@
+const WebSocket = require('ws');
+
 let clients = [];
 
 exports.handler = async (event, context) => {
-    const { WebSocketServer } = require('ws');
-    const wss = new WebSocketServer({ noServer: true });
+    const wss = new WebSocket.Server({ noServer: true });
 
     wss.on('connection', (ws) => {
         clients.push(ws);
